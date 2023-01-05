@@ -2,5 +2,5 @@
 *
 # DON'T ignore the .gitignore
 !.gitignore
-!superset_config.py
-!superset_config_local.example
+!docker-bootstrap.sh
+!docker-init.sh
