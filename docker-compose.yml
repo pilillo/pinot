@@ -9,6 +9,13 @@ x-superset-volumes: &superset-volumes
 
 version: '3.7'
 services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    command: "server /data --console-address ':9001'"
+    ports:
+      - "9100:9000"
+      - "9101:9001"
   zookeeper:
     image: zookeeper:3.5.6
     container_name: zookeeper
@@ -32,8 +39,12 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   pinot-controller:
     image: apachepinot/pinot:0.9.3
-    command: "StartController -zkAddress zookeeper:2181"
+    command: "StartController -zkAddress zookeeper:2181 -config /config/controller-conf.conf"
     container_name: pinot-controller
+    volumes:
+      - ./docker/controller-conf.conf:/config/controller-conf.conf
+      - ./data/schema.json:/config/schema.json
+      - ./data/table-realtime.json:/config/table-realtime.json
     restart: unless-stopped
     ports:
       - "9000:9000"
